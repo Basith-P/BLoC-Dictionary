@@ -1,58 +1,35 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 
-import '../constants/gaps.dart';
+import '../bloc/dicitonary_cubit/dictionary_cubit.dart';
 import '../constants/ui_defaults.dart';
+import '../widgets/loader.dart';
+import 'search_word_view.dart';
 
-class HomePage extends StatelessWidget {
-  const HomePage({Key? key}) : super(key: key);
+class MainPage extends HookWidget {
+  const MainPage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final textTheme = Theme.of(context).textTheme;
-
     return Scaffold(
       body: SafeArea(
           child: Padding(
-        padding: kPaddingAll,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            const Spacer(),
-            Text(
-              'Dictionary',
-              textAlign: TextAlign.center,
-              style: textTheme.displaySmall,
-            ),
-            Text(
-              'Search for a word',
-              textAlign: TextAlign.center,
-              style: textTheme.bodyMedium,
-            ),
-            gapH4,
-            const TextField(
-              decoration: InputDecoration(
-                hintText: 'Search',
-                border: OutlineInputBorder(
-                  borderSide: BorderSide.none,
-                  borderRadius: kBorderRadiusAllMedium,
-                ),
-                isDense: true,
-                filled: true,
-              ),
-            ),
-            const Spacer(),
-            TextButton(
-                onPressed: () {},
-                style: TextButton.styleFrom(
-                  shape: const RoundedRectangleBorder(
-                      borderRadius: kBorderRadiusAllSmall),
-                  foregroundColor: Theme.of(context).colorScheme.onPrimary,
-                  backgroundColor: Theme.of(context).colorScheme.primary,
-                ),
-                child: const Text('Search')),
-          ],
-        ),
-      )),
+              padding: kPaddingAll,
+              child: BlocBuilder<DictionaryCubit, DictionaryState>(
+                builder: (context, state) {
+                  switch (state) {
+                    case NoWordSarchedState():
+                      return const SearchWordView();
+                    case WordSearchingState():
+                      return const Loader();
+                    case ErrorState():
+                      return ErrorWidget("Something went wrong");
+                    default:
+                      return const SearchWordView();
+                  }
+                },
+              ))),
     );
   }
 }
