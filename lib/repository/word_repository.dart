@@ -10,6 +10,8 @@ class WordRepostory {
 
       if (response.statusCode == 200) {
         return wordDetailsFromJson(response.body);
+      } else if (response.statusCode == 404) {
+        return List.empty();
       } else {
         print(response.body);
         throw Exception("Failed to load word details");
